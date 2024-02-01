@@ -7,4 +7,6 @@ This idea would involve creating a platform where users can submit and vote on t
 ## Features
 - Platform brings value investor in one place,Which makes easy to take decision by Collaboration and form a comprehensive analysis to determine whether to buy a stock or not.
 - Peoples can  commands ,like and share there predictions.
-- Overall view point of stock displayed by software based on there all predictio
+- Overall view point of stock displayed by software based on there all prediction
+
+My render link - My render link - https://investor-thoughts.onrender.com/ping
