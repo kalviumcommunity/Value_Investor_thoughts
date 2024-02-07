@@ -1,12 +1,10 @@
 const express = require('express')
+const router = require('./router')
 const mongoose = require('mongoose')
 require('dotenv').config();
 const app = express();
 const port = 5000;
 
-app.get('/ping', (req, res) => {
-  res.send('<h1>Pong!</h1>');
-});
 
 app.get('/',async (req,res)=>{
   try{
@@ -17,6 +15,8 @@ app.get('/',async (req,res)=>{
   }
 })
 
+
+app.use('/methods',router);
 
 
 app.listen(port, () =>{
