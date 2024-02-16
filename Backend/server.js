@@ -3,8 +3,10 @@ const router = require('./router')
 const mongoose = require('mongoose')
 require('dotenv').config();
 const app = express();
+const cors = require('cors')
 const port = 5000;
 
+app.use(cors());
 
 app.use(async (req,res,next)=>{
   try{
