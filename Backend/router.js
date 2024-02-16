@@ -5,6 +5,7 @@ const dataModel = require('./datamodel')
 router.use(express.json())
 
 
+
 router.get("/get-data",async (req,res)=>{
     try{
        const data =await  dataModel.find({})
