@@ -1,32 +1,33 @@
 const express = require('express')
 const router = express.Router();
+const dataModel = require('./datamodel')
 
 router.use(express.json())
 
-router.get("/",(req,res)=>{
-    res.json({
-      message:"Get all data"
-    })
+
+router.get("/get-data",async (req,res)=>{
+    try{
+       const data =await  dataModel.find({})
+       res.status(200).send(data) 
+    }catch(err){
+        res.status(400).send(err.message)
+    }
 })
 
-router.get("/ping",(req,res)=>{
-    res.send("pong")
-})
-
-router.post("/post-method",(req,res)=>{
+router.post("/post-data",(req,res)=>{
  res.status(201).json({
     message:"Get a post request"
  });
 })
 
-router.put("/",(req,res)=>{
+router.put("/update-data",(req,res)=>{
     res.status(200).json({
         message:"Get a put request"
     })
 })
 
 
-router.delete("/",(req,res)=>{
+router.delete("/delete-data",(req,res)=>{
 res.status(200).json({
     message:"Deleted a request"
 })

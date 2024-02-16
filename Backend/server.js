@@ -6,18 +6,17 @@ const app = express();
 const port = 5000;
 
 
-app.get('/',async (req,res)=>{
+app.use(async (req,res,next)=>{
   try{
     await mongoose.connect(process.env.MongoDb_url)
-    res.status(200).send('Db is connected ')
+    console.log('DB is connected')
+    next()
   }catch(error){
-    res.status(400).send('Connection failed')
+    console.log('DB not connected')
   }
 })
 
-
-app.use('/methods',router);
-
+app.use('/',router);
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`);
