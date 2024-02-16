@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 
 export default function Dummy() {
   const [data, setData] = useState([]);
@@ -9,25 +9,25 @@ export default function Dummy() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://localhost:5000/get-data');
+        const response = await axios.get('https://investor-thoughts.onrender.com/get-data');
+        // console.log(response.data)
         setData(response.data);
-        console.log(response.data)
-        // setIsLoading(false);
       } catch (error) {
-        console.log(error)
-        // setError(error);
-        // setIsLoading(false);
+        // console.log(error)
+       
       }
     };
 
     fetchData();
   }, []);
 
+ 
+
   return (
     <div>
       {data && (
         <ul>
-          {data.map((item) => (
+          { data && data.map((item) => (
             <li key={item._id}>{item.name}</li>
           ))}
         </ul>
