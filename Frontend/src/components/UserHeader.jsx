@@ -19,7 +19,7 @@
   
   useEffect(() => {
       const fetchUserPosts = async () => {
-        setIsLoading(true); // Set loading to true before fetching
+        setIsLoading(true);
         try {
           const response = await axios.get(`${BASE_URL}/user-posts`, {
             withCredentials: true,
@@ -54,7 +54,7 @@
       });
   };
   
-  // Render a loading indicator while data is being fetched
+
   if (isLoading) {
     return <div>Loading...</div>;
     }
