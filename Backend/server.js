@@ -21,7 +21,7 @@ mongoose.connection.on('connected', () => {
 });
 
 mongoose.connection.on('error', (err) => {
- console.error('Mongoose connection error:', err);
+ console.error('Mongoose connection error ', err);
 });
 
 // Middleware to connect to MongoDB
@@ -36,7 +36,8 @@ app.use(async (req, res, next) => {
  }
 });
 
-// Use your router here
+
+
 app.use('/', userRouter); // Assuming userRouter is for user-related routes
 
 app.listen(port, () => {
