@@ -11,11 +11,6 @@ const cookieParser = require("cookie-parser");
 app.use(cors({credentials: true, origin: true}));
 
 
-// app.use(cors());
-
-
-
-// Use cookie-parser middleware
 app.use(cookieParser());
 
 app.use(express.json({ limit: '50mb' }));
