@@ -1,15 +1,23 @@
-.App {
-  background-color: #eee;
-  width: 100vw;
-  height: 100vh;
+/* Explore.css */
+.no-stock-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Center vertically */
 }
 
-.search-bar-container {
-  padding-top: 20vh;
-  width: 40%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 200px;
+.message {
+  font-weight: bold;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out; /* Apply fadeIn animation */
+}
+
+/* Define fadeIn animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

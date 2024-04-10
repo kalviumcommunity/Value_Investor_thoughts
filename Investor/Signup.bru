@@ -1,0 +1,15 @@
+meta {
+  name: Signup
+  type: http
+  seq: 1
+}
+
+put {
+  url: http://localhost:5000/update/65dd883ffe02ba2c5fa8569e
+  body: json
+  auth: none
+}
+
+body:json {
+  {FirstName:"hello", email:"hello", password:"asdsd"}
+}

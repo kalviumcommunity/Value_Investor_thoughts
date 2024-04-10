@@ -1,20 +1,50 @@
+const mongoose = require("mongoose");
 
-const mongoose = require("mongoose")
+const dataSchema = new mongoose.Schema(
+  {
+    stockName: {
+      type: String,
+      require: false,
+    },
+    posts: [
+      {
+        investorName: {
+          type: String,
+          require: false,
+        },
+        editId: {
+          type: String,
+          required: false,
+        },
+        postedBy: {
+          // New field for image URL
+          type: String,
+          required: false, // Assuming img is optional
+        },
+        text: {
+          // New field for image URL
+          type: String,
+          required: false, // Assuming img is optional
+        },
+        img: {
+          // New field for image URL
+          type: String,
+          required: false, // Assuming img is optional
+        },
+        profilePic: {
+          type: String,
+          required: false, // Assuming img is optional
+        },
+        StockNameUser: {
+          type: String,
+          required: false,
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-const dataSchema = new mongoose.Schema({
-investorName:{
-    type:String,
-    required:true,
-},
+const DataModel = mongoose.model("posts", dataSchema);
 
-stockName:{
-    type:String,
-    required:true,
-},
-content:{
-    type:String,
-    required:true,
-}
-},{timestamps:true});
-
-module.exports = mongoose.model('data',dataSchema,'Datas')
+module.exports = DataModel;

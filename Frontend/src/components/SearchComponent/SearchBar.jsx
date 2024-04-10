@@ -1,39 +1,78 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-import "./SearchBar.css";
+import { Input, Box, Flex, Text, CircularProgress, useColorModeValue } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../config";
 
-export const SearchBar = ({ setResults }) => {
+function SearchBar() {
   const [input, setInput] = useState("");
+  const [data, setData] = useState([]);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+ 
+  const navigate = useNavigate();
+  const hoverBgColor = useColorModeValue("gray", "gray"); // Adjust hover background color based on color mode
+ 
+  useEffect(() => {
+    fetch(`${BASE_URL}/get-data`)
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  const fetchData = (value) => {
-    fetch("https://investor-thoughts.onrender.com/get-data")
-      .then((response) => response.json())
-      .then((json) => {
-        const results = json.filter((user) => {
-          return (
-            value &&
-            user &&
-            user.name &&
-            user.name.toLowerCase().includes(value)
-          );
-        });
-        setResults(results);
-      });
-  };
+  useEffect(() => {
+    if (input.trim() === "") {
+      setResults([]); 
+      return; 
+    }
+    const newData =
+      data &&
+      data.filter((user) =>
+        user.stockName.toLowerCase().includes(input.toLowerCase())
+      );
+    setResults(newData);
+  }, [input, data]);
 
-  const handleChange = (value) => {
-    setInput(value);
-    fetchData(value);
+  
+  const handleChange = (e) => setInput(e.target.value);
+
+  const handleClick = (result) => {
+    navigate("/Explore", { state: { Explore: result } });
   };
 
   return (
-    <div className="input-wrapper">
-      <FaSearch id="search-icon" />
-      <input
-        placeholder="Type to search..."
-        value={input}
-        onChange={(e) => handleChange(e.target.value)}
-      />
-    </div>
+    <Box>
+      <Flex justifyContent="center" alignItems="center" mb={4}>
+        <FaSearch id="search-icon" />
+        <Input
+          variant="unstyled"
+          placeholder="Type to search..."
+          value={input}
+          onChange={handleChange}
+          ml={2}
+          fontSize="1.25rem"
+        />
+      </Flex>
+      <Box textAlign="center">
+        {loading ? (
+          <CircularProgress isIndeterminate color="teal" />
+        ) : (
+          results.map((result, id) => (
+            <Text
+              key={id}
+              p={2}
+              _hover={{ bg: hoverBgColor, cursor: "pointer" }}
+              onClick={() => handleClick(result)}
+            >
+              {result.stockName}
+            </Text>
+          ))
+        )}
+      </Box>
+    </Box>
   );
-};
+}
+
+export default SearchBar;
