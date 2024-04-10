@@ -16,7 +16,11 @@ const generate = (newUser, res) => {
   res.cookie("jwt", token, {
     httpOnly: true,
     maxAge: 1000 * 3600 * 240,
+    secure: true,
+    sameSite: 'strict'
   });
 };
 
 module.exports.generateToken = generate;
+
+
