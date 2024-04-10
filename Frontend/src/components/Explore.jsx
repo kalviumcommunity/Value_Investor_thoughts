@@ -10,7 +10,7 @@ const Explore = () => {
  
   const location = useLocation();
   const stock = location.state?.Explore;
-  // const storedData = JSON.parse(localStorage.getItem("CurrentUser"));
+  
 
   if (!stock) {
     return (
