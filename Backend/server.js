@@ -7,29 +7,26 @@ const app = express();
 const port = 5000;
 const cookieParser = require("cookie-parser");
 
-// Define the allowed origins for CORS
-// const allowedOrigins = {
-//  'http://localhost:5173': true, // Local development URL
-//  'https://investor-app-name.onrender.com': true, // Production URL on Render
-// };
+// Configure CORS
+const allowedOrigins = ['https://investor-hub.netlify.app','http://localhost:5173']
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if the origin is allowed
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    
+    // Allow the request
+    return callback(null, true);
+  }
+}));
 
-// CORS configuration
-// app.use(cors({
-//  origin: function (origin, callback) {
-//     if (allowedOrigins[origin]) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//  },
-//  credentials: true, // Allow cookies to be sent with requests
-//  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-//  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-// })); 
 
-let allowedOrigins = ['https://investor-app-name.onrender.com','http://localhost:5173']
 
-app.use(cors({origin: allowedOrigins, credentials:true}))
 
 // Use cookie-parser middleware
 app.use(cookieParser());
