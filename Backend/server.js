@@ -7,8 +7,8 @@ const app = express();
 const port = 5000;
 const cookieParser = require("cookie-parser");
 
-// Configure CORS
-const allowedOrigins = ['https://investor-hub.netlify.app','http://localhost:5173']
+// Configure CORS,
+const allowedOrigins = ['https://investor-hub.netlify.app','http://localhost:5173', 'https://66161b637c08956d3bce6cb9--investor-hub.netlify.app/Register']
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
