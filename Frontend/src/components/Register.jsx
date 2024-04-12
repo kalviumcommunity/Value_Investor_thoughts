@@ -1,4 +1,4 @@
-import React, { useState  , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,9 @@ import BASE_URL from "../config";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 
-export  function Register() {
+import Cookie from "js-cookie";
+
+export function Register() {
   const toast = useToast();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
@@ -19,10 +21,10 @@ export  function Register() {
     watch,
   } = useForm();
 
-// one with same id on both 
-// just feacth 
+  // one with same id on both
+  // just feacth
 
-// passing the user username rom chnaged on and automcality on every chnageing
+  // passing the user username rom chnaged on and automcality on every chnageing
   const onSubmit = (values) => {
     if (!loginPage) {
       axios
@@ -34,9 +36,10 @@ export  function Register() {
             email: values.email,
             firstName: values.firstName,
             lastName: values.lastName,
-            id: res.data.user._id
+            id: res.data.user._id,
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
+          Cookie.set("jwt", res.data.token, { expires: 1 });
           navigate("/UserPage");
           toast({
             status: "success",
@@ -66,12 +69,14 @@ export  function Register() {
           }
         )
         .then((res) => {
+          console.log(res.data)
           const userData = {
             email: values.email,
-            id: res.data.user._id
+            id: res.data.user._id,
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
-      
+          Cookie.set("jwt", res.data.token, { expires: 1 });
+
           navigate("/UserPage");
           toast({
             status: "success",
