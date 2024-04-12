@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 
-
 const generate = (newUser, res) => {
   const token = jwt.sign(
     {
@@ -13,14 +12,8 @@ const generate = (newUser, res) => {
       expiresIn: "7d",
     }
   );
-  res.cookie("jwt", token, {
-    httpOnly: true,
-    maxAge: 1000 * 3600 * 240,
-    secure: true,
-    sameSite: 'strict'
-  });
+
+  return token;
 };
 
 module.exports.generateToken = generate;
-
-

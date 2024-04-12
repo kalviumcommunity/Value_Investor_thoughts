@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcrypt");
 const {
   generateToken,
@@ -13,16 +12,14 @@ const userModel = require("../Validation/userModel");
 const postModel = require("../datamodel");
 const cloudinary = require("cloudinary").v2;
 
-
-require('dotenv').config();
-
+require("dotenv").config();
 
 cloudinary.config({
- cloud_name: process.env.CLOUD_NAME, 
- api_key: process.env.API_KEY,
- api_secret: process.env.API_SECRET
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
-key = (process.env.API_KEY)
+key = process.env.API_KEY;
 const signupUser = async (req, res) => {
   try {
     const { firstName, email, password, bio, ProfilePic } = req.body;
@@ -48,9 +45,10 @@ const signupUser = async (req, res) => {
     });
     await newUser.save();
     if (newUser) {
-      generateToken(newUser, res);
+      const token = generateToken(newUser, res);
       res.status(201).json({
         message: "Signup successfully",
+        token: token,
         user: {
           _id: newUser._id,
           name: newUser.firstName,
@@ -83,9 +81,10 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "Wrong password" });
 
     // Generate token and send response with user data
-    generateToken(user, res);
+    const token = generateToken(user, res);
     res.status(200).json({
       message: "Login successfully",
+      token: token,
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -114,7 +113,6 @@ const getData = async (req, res) => {
   try {
     const data = await DataModel.find({});
     res.status(200).send(data);
-    
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -136,7 +134,9 @@ const updateUser = async (req, res) => {
     const userId = req.params.id;
     const updatedUser = await userModel.findById(userId);
     const { firstName, lastName, email, bio, password, profilePic } = req.body;
-    const updateUsername = await postModel.findOne({ "posts.postedBy": userId });
+    const updateUsername = await postModel.findOne({
+      "posts.postedBy": userId,
+    });
 
     if (!updateUsername) {
       return res.status(404).json({ error: "No" });
@@ -148,8 +148,6 @@ const updateUser = async (req, res) => {
       );
     }
 
-
-   
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -167,7 +165,6 @@ const updateUser = async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, salt);
       updatedUser.password = hashedPassword;
     }
-  
 
     if (profilePic) {
       try {
@@ -187,7 +184,7 @@ const updateUser = async (req, res) => {
         });
       }
     }
-  
+
     await updatedUser.save();
 
     res.status(200).json({
@@ -283,7 +280,7 @@ const createPost = async (req, res) => {
       });
     }
 
-    const lowerCaseStockName = Stock.replace(/\s+/g, '').toLowerCase();
+    const lowerCaseStockName = Stock.replace(/\s+/g, "").toLowerCase();
 
     let newPostData = {
       postedBy,
@@ -292,14 +289,16 @@ const createPost = async (req, res) => {
       Stock,
       investorName,
       profilePic,
-      StockNameUser: lowerCaseStockName // Added StockNameUser field
+      StockNameUser: lowerCaseStockName, // Added StockNameUser field
     };
     if (img) {
       const uploadedResponse = await cloudinary.uploader.upload(img);
       newPostData.img = uploadedResponse.url;
     }
 
-    let existingData = await postModel.findOne({ stockName: lowerCaseStockName });
+    let existingData = await postModel.findOne({
+      stockName: lowerCaseStockName,
+    });
     if (!existingData) {
       existingData = new postModel({
         stockName: lowerCaseStockName,
@@ -324,7 +323,6 @@ const createPost = async (req, res) => {
   }
 };
 
-
 const editPost = async (req, res) => {
   try {
     const { investorName, postedBy, EditId, text, img, Stock } = req.body;
@@ -332,10 +330,12 @@ const editPost = async (req, res) => {
       return res.status(400).json({ message: "EditId is required" });
     }
     if (!text || text.trim() === "") {
-      return res.status(400).json({ message: "Text field is required and cannot be empty" });
+      return res
+        .status(400)
+        .json({ message: "Text field is required and cannot be empty" });
     }
 
-    const lowerCaseStockName = Stock.replace(/\s+/g, '').toLowerCase();
+    const lowerCaseStockName = Stock.replace(/\s+/g, "").toLowerCase();
 
     // Find the existing post
     const existingPost = await postModel.findOne({ "posts._id": EditId });
@@ -345,7 +345,9 @@ const editPost = async (req, res) => {
     }
 
     // Check if the stock names match
-    const postToUpdate = existingPost.posts.find(post => post._id.toString() === EditId);
+    const postToUpdate = existingPost.posts.find(
+      (post) => post._id.toString() === EditId
+    );
     if (postToUpdate.StockNameUser !== lowerCaseStockName) {
       // Remove the post from the current stock
       await postModel.updateOne(
@@ -354,7 +356,12 @@ const editPost = async (req, res) => {
       );
 
       // Add the post to the new stock
-      let newPostData = { investorName, text, StockNameUser: lowerCaseStockName, postedBy };
+      let newPostData = {
+        investorName,
+        text,
+        StockNameUser: lowerCaseStockName,
+        postedBy,
+      };
       if (img) {
         const uploadedResponse = await cloudinary.uploader.upload(img);
         newPostData.img = uploadedResponse.url;
@@ -362,7 +369,9 @@ const editPost = async (req, res) => {
         newPostData.img = postToUpdate.img; // Use the existing image
       }
 
-      let stockExists = await postModel.findOne({ stockName: lowerCaseStockName });
+      let stockExists = await postModel.findOne({
+        stockName: lowerCaseStockName,
+      });
       if (!stockExists) {
         await postModel.create({
           stockName: lowerCaseStockName,
@@ -378,7 +387,17 @@ const editPost = async (req, res) => {
       // Update the post within the same stock
       await postModel.updateOne(
         { "posts._id": EditId },
-        { $set: { "posts.$": { investorName, text, StockNameUser: lowerCaseStockName, postedBy, img: postToUpdate.img || img } } }
+        {
+          $set: {
+            "posts.$": {
+              investorName,
+              text,
+              StockNameUser: lowerCaseStockName,
+              postedBy,
+              img: postToUpdate.img || img,
+            },
+          },
+        }
       );
     }
 
@@ -388,9 +407,6 @@ const editPost = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
 
 const deletePost = async (req, res) => {
   try {
@@ -411,9 +427,7 @@ const deletePost = async (req, res) => {
   }
 };
 
-
-
-module.exports = {  
+module.exports = {
   signupUser,
   loginUser,
   logoutUser,
@@ -426,8 +440,6 @@ module.exports = {
   getUserPosted,
   followUnFollowUser,
 };
-
-
 
 // Stock Name have to apper like how they given
 // delete if there is no data provided in stock

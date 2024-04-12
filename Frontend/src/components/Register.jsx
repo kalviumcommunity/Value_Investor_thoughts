@@ -32,6 +32,7 @@ export function Register() {
           withCredentials: true,
         })
         .then((res) => {
+          console.log(res.data)
           const userData = {
             email: values.email,
             firstName: values.firstName,
