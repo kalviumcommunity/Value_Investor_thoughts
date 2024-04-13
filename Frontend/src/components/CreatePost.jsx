@@ -27,7 +27,7 @@ import useShowToast from "../../Hooks/useShowToast";
 const MAX_CHAR = 500;
 const MAX_CHAR_SN = 50;
 
-const CreatePost = () => {
+const CreatePost = ({handleFetchData}) => {
  const { isOpen, onOpen, onClose } = useDisclosure();
  const [postText, setPostText] = useState("");
  const [StockName, setStockName] = useState("");
@@ -62,6 +62,7 @@ const CreatePost = () => {
       const userId = storedData.id;
       const userName = storedData.firstName; 
       const profilePic = storedData.profilePic; 
+      // console.log(profilePic)
       const res = await axios.post(`${BASE_URL}/create`, {
         postedBy: userId,
         investorName: userName,
@@ -69,20 +70,22 @@ const CreatePost = () => {
         profilePic: profilePic,
         img: imgUrl,
         Stock: StockName
-      }, {
-        withCredentials: true 
       });
+
+     
 
       const data = await res.data;
       if (data.error) {
         showToast("Error", data.error, "error");
         return;
       }
+      handleFetchData()
       showToast("Success", "Post created successfully", "success");
       onClose();
       setPostText("");
       setImgUrl("");
     } catch (error) {
+      console.log(error)
       showToast("Error", error.message || "An error occurred", "error");
     } finally {
       setLoading(false);

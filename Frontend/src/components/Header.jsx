@@ -12,7 +12,6 @@ import WhiteLogo from "../assets/WhiteLogo.png";
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const user = useRecoilValue(userAtom);
-  const navigate = useNavigate();
 
   return (
     <Flex justifyContent={"space-around"} mt={6} mb="12">

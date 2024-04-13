@@ -11,7 +11,7 @@ const Explore = () => {
   const location = useLocation();
   const stock = location.state?.Explore;
   
-
+console.log(stock)
   if (!stock) {
     return (
       <Container maxW="50vw" h="70vh" display="flex" justifyContent="center" alignItems="center">
@@ -42,6 +42,7 @@ const Explore = () => {
               <div key={index}>
                 <HStack>
                   <Avatar name={post.investorName} src={post.profilePic} />
+                  console.log()
                   <VStack align="start">
               <Text fontWeight="bold">{post.investorName}</Text>
                     <Text fontSize="sm" color="gray.500">@{stock.stockName}</Text>

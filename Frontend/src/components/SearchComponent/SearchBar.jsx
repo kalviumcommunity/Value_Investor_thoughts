@@ -3,6 +3,8 @@ import { FaSearch } from "react-icons/fa";
 import { Input, Box, Flex, Text, CircularProgress, useColorModeValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config";
+import Cookie from "js-cookie";
+
 
 function SearchBar() {
   const [input, setInput] = useState("");
@@ -14,7 +16,11 @@ function SearchBar() {
   const hoverBgColor = useColorModeValue("gray", "gray"); // Adjust hover background color based on color mode
  
   useEffect(() => {
-    fetch(`${BASE_URL}/get-data`)
+    fetch(`${BASE_URL}/get-data`,{
+      headers:{
+        token:Cookie.get('jwt')
+      }
+    })
       .then((res) => res.json())
       .then((res) => {
         setData(res);

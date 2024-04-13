@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import usePreviewImg from "../../Hooks/usePreviewImg";
 import useShowToast from "../../Hooks/useShowToast";
 import BASE_URL from "../config";
-
+import Cookie from "js-cookie";
 export default function UpdateProfilePage() {
   const storedData = JSON.parse(localStorage.getItem("CurrentUser"));
   const navigate = useNavigate(); // Initialize useNavigate
@@ -46,11 +46,11 @@ export default function UpdateProfilePage() {
       }
       const res = await fetch(`${BASE_URL}/update/${userId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+        headers:{
+          'Content-Type': 'application/json', 
+          token: Cookie.get("jwt")
         },
-        body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
-        credentials: "include",
+        body: JSON.stringify({ ...inputs, profilePic: imgUrl })
       });
       const data = await res.json();
       if (res.ok) {

@@ -9,6 +9,7 @@
   import axios from "axios";
   import BASE_URL from "../config";
   import { Link as RouterLink } from "react-router-dom";
+  import Cookie from "js-cookie";
 
   const UserHeader = () => {
     const toast = useToast();
@@ -16,14 +17,18 @@
   const [isLoading, setIsLoading] = useState(true); // Add a loading state
   const storedData = JSON.parse(localStorage.getItem("CurrentUser"));
   
+  // console.log(Cookie.get('jwt'))
   
   useEffect(() => {
       const fetchUserPosts = async () => {
         setIsLoading(true);
         try {
-          const response = await axios.get(`${BASE_URL}/user-posts`, {
-            withCredentials: true,
+          const response = await axios.get(`${BASE_URL}/user-posts`,{
+            headers:{
+              token:Cookie.get('jwt')
+            }
           });
+          // console.log(response)
           setUserData(response.data.user);
         } catch (error) {
           console.log(error.message);
@@ -101,7 +106,7 @@
           </Flex>
               	  
           <Flex w={"full"}>
-              <Flex flex={1} justifyContent={"left"} pb='3' borderBottom={"1px solid gray"} color={"red.500"} cursor={"pointer"}>
+              <Flex flex={1} justifyContent={"center"} pb='3' borderBottom={"1px solid gray"}  cursor={"pointer"}>
                   <Text fontWeight={"bold"}>POSTED</Text>
               </Flex>
           </Flex>

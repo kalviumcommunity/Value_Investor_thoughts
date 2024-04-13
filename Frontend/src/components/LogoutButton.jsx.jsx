@@ -8,19 +8,17 @@ import { FiLogOut } from "react-icons/fi";
 import { useEffect } from "react";
 import BASE_URL from "../config";
 import axios from 'axios';
+import Cookie from "js-cookie";
 const LogoutButton = () => {
 	const setUser = useSetRecoilState(userAtom);
 	const showToast = useShowToast();
 
-	
-
 	const handleLogout = async () => {
 		try {
 			const res = await axios.post(`${BASE_URL}/logout`, {}, {
-				withCredentials: true,
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers:{
+					token: Cookie.get("jwt")
+				  }			
 			});
 	
 			if (res.data.error) {

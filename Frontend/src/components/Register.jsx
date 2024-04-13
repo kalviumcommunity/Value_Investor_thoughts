@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-
 import Cookie from "js-cookie";
 
 export function Register() {
@@ -14,6 +13,7 @@ export function Register() {
   const [isHovered, setIsHovered] = useState(false);
   const [loginPage, setLoginPage] = useState(false);
   const storedData = JSON.parse(localStorage.getItem("CurrentUser"));
+
   const {
     register,
     handleSubmit,
@@ -21,18 +21,11 @@ export function Register() {
     watch,
   } = useForm();
 
-  // one with same id on both
-  // just feacth
-
-  // passing the user username rom chnaged on and automcality on every chnageing
   const onSubmit = (values) => {
     if (!loginPage) {
       axios
-        .post(`${BASE_URL}/register`, values, {
-          withCredentials: true,
-        })
+        .post(`${BASE_URL}/register`, values)
         .then((res) => {
-          console.log(res.data)
           const userData = {
             email: values.email,
             firstName: values.firstName,
@@ -41,7 +34,7 @@ export function Register() {
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
           Cookie.set("jwt", res.data.token, { expires: 1 });
-          navigate("/UserPage");
+          navigate("/userPage");
           toast({
             status: "success",
             description: res.data.message,
@@ -64,9 +57,6 @@ export function Register() {
           {
             email: values.email,
             password: values.password,
-          },
-          {
-            withCredentials: true,
           }
         )
         .then((res) => {
@@ -77,8 +67,7 @@ export function Register() {
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
           Cookie.set("jwt", res.data.token, { expires: 1 });
-
-          navigate("/UserPage");
+          navigate("/userPage");
           toast({
             status: "success",
             description: res.data.message,
