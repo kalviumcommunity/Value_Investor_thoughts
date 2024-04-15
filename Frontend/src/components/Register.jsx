@@ -60,7 +60,7 @@ export function Register() {
           }
         )
         .then((res) => {
-          console.log(res.data)
+          
           const userData = {
             email: values.email,
             id: res.data.user._id,
