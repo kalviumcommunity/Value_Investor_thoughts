@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,39 +16,41 @@ import userAtom from "../Atoms/CurrentUser";
 import { useRecoilValue } from "recoil";
 import LogoutButton from "./components/LogoutButton.jsx";
 import CreatePost from "./components/CreatePost.jsx";
-
 import UpdateProfilePage from "./components/UpdateProfilePage.jsx";
 
 function App() {
-  const user = useRecoilValue(userAtom);
+  // const user = useRecoilValue(userAtom);
+
+  const [userData,setUserData] = useState( localStorage.getItem('CurrentUser'))
+  // console.log(userData)
+
 
   return (
     <Router>
-      <Header />
+      <Header userData={userData} />
       <Routes>
-        <Route path="/" element={<Navigate to="/Register" />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/" element={userData? <Navigate to="/userPage" />:<Navigate to="/Register" />} />
+        <Route path="/Register" element={<Register setUserData={setUserData} />} />
         <Route
           path="/Explore"
-          element={user ? <Explore /> : <Navigate to="/" />}
+          element={userData ? <Explore /> : <Navigate to="/" />}
         />
         <Route
           path="/SearchBar"
-          element={user ? <SearchBar /> : <Navigate to="/" />}
+          element={userData ? <SearchBar /> : <Navigate to="/" />}
         />
         <Route
           path="/updateUser"
-          element={user ? <UpdateProfilePage /> : <Navigate to="/" />}
+          element={userData ? <UpdateProfilePage /> : <Navigate to="/" />}
         />
-   
-        <Route path="/userPage" 
-        element={user ? <UserPage /> :<Navigate to="/"/>}/>
+        <Route path="/userpage" 
+        element={ <UserPage/>}/>
        <Route
           path="/createPost"
-          element={user ? <CreatePost /> : <Navigate to="/" />}
+          element={userData ? <CreatePost  /> : <Navigate to="/" />}
         />
       </Routes>
-      {user && <LogoutButton />}
+      {userData && <LogoutButton setUserData={setUserData} />}
     </Router>
   );
 }

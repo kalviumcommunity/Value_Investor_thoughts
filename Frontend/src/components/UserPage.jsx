@@ -43,6 +43,7 @@ function UserPage() {
   const imageRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
 
+console.log('userpage called')
 
   const handleFetchData = () => {
     fetch(`${BASE_URL}/getUserPostedData/${userId}`, {

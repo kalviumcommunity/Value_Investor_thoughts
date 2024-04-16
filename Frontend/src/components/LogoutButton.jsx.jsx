@@ -1,6 +1,6 @@
 import { Button  } from "@chakra-ui/button";
 import { useSetRecoilState } from "recoil";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { MdOutlineExplore } from "react-icons/md";
 import userAtom from "../../Atoms/CurrentUser";	
 import useShowToast from "../../Hooks/useShowToast";
@@ -9,9 +9,10 @@ import { useEffect } from "react";
 import BASE_URL from "../config";
 import axios from 'axios';
 import Cookie from "js-cookie";
-const LogoutButton = () => {
+const LogoutButton = ({setUserData}) => {
 	const setUser = useSetRecoilState(userAtom);
 	const showToast = useShowToast();
+	const navigate = useNavigate();
 
 	const handleLogout = async () => {
 		try {
@@ -25,8 +26,8 @@ const LogoutButton = () => {
 				showToast("Error", res.data.error, "error");
 				return;
 			}
-	
-			localStorage.removeItem("CurrentUser");
+			setUserData('')
+			navigate('/Register')
 			setUser(null);
 		} catch (error) {
 			showToast("Error", error.message, "error");

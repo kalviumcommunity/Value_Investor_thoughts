@@ -9,13 +9,13 @@ import { Link as RouterLink } from "react-router-dom";
 import BlackLogo from "../assets/BlackLogo.png";
 import WhiteLogo from "../assets/WhiteLogo.png";
 
-const Header = () => {
+const Header = ({userData}) => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const user = useRecoilValue(userAtom);
+  // const user = useRecoilValue(userAtom);
 
   return (
     <Flex justifyContent={"space-around"} mt={6} mb="12">
-      {user && (
+      {userData && (
         <>
           <Button size={{ base: "sm", sm: "md" }}>
             <RouterLink to="/userPage">

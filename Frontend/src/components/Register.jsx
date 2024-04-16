@@ -7,7 +7,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import Cookie from "js-cookie";
 
-export function Register() {
+export function Register({setUserData}) {
   const toast = useToast();
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
@@ -33,14 +33,15 @@ export function Register() {
             id: res.data.user._id,
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
+          setUserData(userData)
           Cookie.set("jwt", res.data.token, { expires: 1 });
-          navigate("/userPage");
           toast({
             status: "success",
             description: res.data.message,
             duration: 3000,
             isClosable: true,
           });
+          navigate("/userpage");
         })
         .catch((err) => {
           toast({
@@ -52,20 +53,17 @@ export function Register() {
         });
     } else {
       axios
-        .post(
-          `${BASE_URL}/login`,
-          {
-            email: values.email,
-            password: values.password,
-          }
-        )
+        .post(`${BASE_URL}/login`, {
+          email: values.email,
+          password: values.password,
+        })
         .then((res) => {
-          
           const userData = {
             email: values.email,
             id: res.data.user._id,
           };
           localStorage.setItem("CurrentUser", JSON.stringify(userData));
+          setUserData(userData)
           Cookie.set("jwt", res.data.token, { expires: 1 });
           navigate("/userPage");
           toast({
@@ -86,6 +84,11 @@ export function Register() {
         });
     }
   };
+
+useEffect(()=>{
+	localStorage.removeItem("CurrentUser");
+},[])
+
 
   return (
     <div className="container mt-5">

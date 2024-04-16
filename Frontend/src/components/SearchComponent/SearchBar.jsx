@@ -18,7 +18,7 @@ function SearchBar() {
   useEffect(() => {
     fetch(`${BASE_URL}/get-data`,{
       headers:{
-        token:Cookie.get('jwt')
+        token: Cookie.get('jwt')
       }
     })
       .then((res) => res.json())
