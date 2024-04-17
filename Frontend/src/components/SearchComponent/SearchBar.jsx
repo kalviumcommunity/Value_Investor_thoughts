@@ -61,22 +61,6 @@ function SearchBar() {
           fontSize="1.25rem"
         />
       </Flex>
-      <Box textAlign="center">
-        {loading ? (
-          <CircularProgress isIndeterminate color="teal" />
-        ) : (
-          results.map((result, id) => (
-            <Text
-              key={id}
-              p={2}
-              _hover={{ bg: hoverBgColor, cursor: "pointer" }}
-              onClick={() => handleClick(result)}
-            >
-              {result.stockName}
-            </Text>
-          ))
-        )}
-      </Box>
     </Box>
   );
 }
