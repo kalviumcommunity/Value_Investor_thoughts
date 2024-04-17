@@ -134,6 +134,79 @@
     }
   };
 
+    const updateUser = async (req, res) => {
+      try {
+       
+        const { firstName, lastName, email, bio, password, profilePic } = req.body;
+        const userId = req.params.id;
+        const updatedUser = await userModel.findById(userId);
+        const updateUsername = await postModel.findOne({
+          "posts.postedBy": userId,
+        });
+
+        if (!updateUsername) {
+          return res.status(404).json({ error: "Post content to update" });
+        } else {
+          await postModel.updateMany(
+            { "posts.postedBy": userId },
+            { $set: { "posts.$[elem].investorName": firstName, "posts.$[elem].profilePic": profilePic } },
+            { arrayFilters: [{ "elem.postedBy": userId }] }
+          );
+        }
+
+        if (!updatedUser) {
+          return res.status(404).json({ error: "User not found" });
+        }
+        if (req.params.id !== userId.toString())
+          return res
+            .status(400)
+            .json({ error: "You cannot update other user's profile" });
+        if (firstName) updatedUser.firstName = firstName;
+        if (lastName) updatedUser.lastName = lastName;
+        if (email) updatedUser.email = email;
+        if (bio) updatedUser.bio = bio;
+        if (password) {
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(password, salt);
+          updatedUser.password = hashedPassword;
+        }
+
+        if (profilePic) {
+          try {
+            const publicId = updatedUser.profilePic
+              ? updatedUser.profilePic.split("/").pop().split(".")[0]
+              : null;
+            if (publicId) {
+              await cloudinary.uploader.destroy(publicId);
+            }
+            const uploadResult = await cloudinary.uploader.upload(profilePic);
+            updatedUser.profilePic = uploadResult.url;
+          } catch (error) {
+            console.error("Error updating profile picture:", error);
+            return res.status(500).json({
+              error: "Failed to update profile picture",
+              details: error.message,
+            });
+          }
+        }
+
+        await updatedUser.save();
+
+        res.status(200).json({
+          message: "Profile updated successfully",
+          user: {
+            id: updatedUser._id,
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email,
+            bio: updatedUser.bio,
+            profilePic: updatedUser.profilePic,
+          },
+        });
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
 
   const getUserPosts = async (req, res) => {
     try {
