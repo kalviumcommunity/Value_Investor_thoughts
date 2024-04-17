@@ -262,7 +262,177 @@
     }
   };
 
+  const createPost = async (req, res) => {
+    try {
+      const { postedBy, text, img, Stock, investorName, profilePic } = req.body;
+   
+      if (!postedBy || postedBy.trim() === "" || !text || text.trim() === "") {
+        return res.status(400).json({
+          message: "postedBy and text fields are required and cannot be empty",
+        });
+      }
+      const user = await userModel.findById(postedBy);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (postedBy.toString() !== user._id.toString()) {
+        return res.status(401).json({ message: "Unauthorized to create post" });
+      }
+      const maxLength = 1500;
+      if (text.length > maxLength) {
+        return res.status(400).json({
+          message: `Text must be less than ${maxLength} characters`,
+        });
+      }
 
+      const lowerCaseStockName = Stock.replace(/\s+/g, "").toLowerCase();
+
+      let newPostData = {
+        postedBy,
+        text,
+        img,
+        Stock,
+        investorName,
+        profilePic,
+        StockNameUser: lowerCaseStockName,
+      };
+      if (img) {
+        const uploadedResponse = await cloudinary.uploader.upload(img);
+        newPostData.img = uploadedResponse.url;
+      }
+      
+
+      let existingData = await postModel.findOne({
+        stockName: lowerCaseStockName,
+      });
+      if (!existingData) {
+        existingData = new postModel({
+          stockName: lowerCaseStockName,
+          posts: [newPostData],
+        });
+        await existingData.save();
+        return res.status(201).json({
+          message: "Post created successfully",
+          newPost: existingData,
+        });
+      } else {
+        existingData.posts.push(newPostData);
+        await existingData.save();
+        return res.status(201).json({
+          message: "Post created successfully",
+          newPost: newPostData,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  const editPost = async (req, res) => {add
+    try {
+      const { investorName, postedBy, EditId, text, img, Stock} = req.body;
+   
+      if (!EditId) {
+        return res.status(400).json({ message: "EditId is required" });
+      }
+      if (!text || text.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "Text field is required and cannot be empty" });
+      }
+
+      const lowerCaseStockName = Stock.replace(/\s+/g, "").toLowerCase();
+
+      // Find the existing post
+      const existingPost = await postModel.findOne({ "posts._id": EditId });
+      if (!existingPost) {
+        console.error(`No post found with id ${EditId}`);
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      // Check if the stock names match
+      const postToUpdate = existingPost.posts.find(
+        (post) => post._id.toString() === EditId
+      );
+      if (postToUpdate.StockNameUser !== lowerCaseStockName) {
+        // Remove the post from the current stock
+        await postModel.updateOne(
+          { "posts._id": EditId },
+          { $pull: { posts: { _id: EditId } } }
+        );
+
+        // Add the post to the new stock
+        let newPostData = {
+          investorName,
+          text,
+          StockNameUser: lowerCaseStockName,
+          postedBy,
+        };
+        if (img) {
+          const uploadedResponse = await cloudinary.uploader.upload(img);
+          newPostData.img = uploadedResponse.url;
+        } else {
+          newPostData.img = postToUpdate.img; // Use the existing image
+        }
+
+        let stockExists = await postModel.findOne({
+          stockName: lowerCaseStockName,
+        });
+        if (!stockExists) {
+          await postModel.create({
+            stockName: lowerCaseStockName,
+            posts: [newPostData],
+          });
+        } else {
+          await postModel.updateOne(
+            { stockName: lowerCaseStockName },
+            { $push: { posts: newPostData } }
+          );
+        }
+      } else {
+        // Update the post within the same stock
+        await postModel.updateOne(
+          { "posts._id": EditId },
+          {
+            $set: {
+              "posts.$": {
+                investorName,
+                text,
+                StockNameUser: lowerCaseStockName,
+                postedBy,
+                img: postToUpdate.img || img,
+              },
+            },
+          }
+        );
+      }
+
+      res.status(200).json({ message: "Post updated successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+
+  const deletePost = async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const deletedPost = await postModel.findOneAndUpdate(
+        { "posts._id": id },
+        { $pull: { posts: { _id: id } } },
+        { new: true }
+      );
+      if (!deletedPost) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 
   module.exports = {
     signupUser,
