@@ -15,6 +15,18 @@ function SearchBar() {
   const navigate = useNavigate();
   const hoverBgColor = useColorModeValue("gray", "gray"); // Adjust hover background color based on color mode
  
+  useEffect(() => {
+    fetch(`${BASE_URL}/get-data`,{
+      headers:{
+        token: Cookie.get('jwt')
+      }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     if (input.trim() === "") {
