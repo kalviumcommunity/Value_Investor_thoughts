@@ -72,7 +72,7 @@
     try {
       const { error, value } = validateLogin(req.body);
       if (error) {
-        console.log(error);
+        
         return res.status(404).send(error.message);
       }
       const user = await userModel.findOne({ email: email });
