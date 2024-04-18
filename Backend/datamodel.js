@@ -16,11 +16,6 @@ const dataSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        postedBy: {
-          // New field for image URL
-          type: String,
-          required: false, // Assuming img is optional
-        },
         text: {
           // New field for image URL
           type: String,

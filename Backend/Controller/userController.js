@@ -1,5 +1,7 @@
   const bcrypt = require("bcrypt");
- 
+  const {
+    generateToken,
+  } = require("../utils/helpers/generate_Token_and_cookies");
   const DataModel = require("../datamodel");
 
   const {
