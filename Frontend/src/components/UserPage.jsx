@@ -117,7 +117,6 @@ console.log('userpage called')
   {data && data.map((post, index) => (
     <Box
       key={post._id}
-      maxW="50vw"
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
