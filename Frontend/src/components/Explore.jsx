@@ -24,7 +24,7 @@ console.log(stock)
     );
   }
   return (
-    <Container maxW="50vw">
+    <Container maxW="81%">
       {stock.posts.map((post, index) => (
         <Box
           key={index}
