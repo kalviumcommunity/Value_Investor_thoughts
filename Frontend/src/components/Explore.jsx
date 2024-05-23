@@ -28,7 +28,6 @@ console.log(stock)
       {stock.posts.map((post, index) => (
         <Box
           key={index}
-          maxW="50vw"
           borderWidth="1px"
           borderRadius="lg"
           overflow="hidden"
@@ -42,7 +41,6 @@ console.log(stock)
               <div key={index}>
                 <HStack>
                   <Avatar name={post.investorName} src={post.profilePic} />
-                  console.log()
                   <VStack align="start">
               <Text fontWeight="bold">{post.investorName}</Text>
                     <Text fontSize="sm" color="gray.500">@{stock.stockName}</Text>
