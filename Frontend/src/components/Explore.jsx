@@ -52,7 +52,7 @@ console.log(stock)
               </div>
             </HStack>
             <Text mt={1}>{post.text}</Text>
-            {post.img && <Image src={post.img} alt={`Post image`}  borderRadius="md" maxW="50vw" maxH="40vw"  objectFit="cover"  />}
+            {post.img && <Image src={post.img} alt={`Post image`}  borderRadius="md"  objectFit="cover"  />}
             src={post.img}
             <HStack mt={4}>
               <IconButton
