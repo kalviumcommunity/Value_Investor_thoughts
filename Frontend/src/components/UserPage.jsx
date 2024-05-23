@@ -113,7 +113,7 @@ console.log('userpage called')
   return (
     <>
       <UserHeader />
-      <Container maxW="50vw">
+      <Container maxW="81%">
   {data && data.map((post, index) => (
     <Box
       key={post._id}
@@ -141,8 +141,6 @@ console.log('userpage called')
             {post.img && (
               <Image
                 borderRadius="md"
-                maxW="50vw"
-                maxH="40vw"
                 src={post.img}
                 alt={`Post by ${post.investorName}`}
               />
