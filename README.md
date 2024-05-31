@@ -9,4 +9,4 @@ This idea would involve creating a platform where investor  can list there own t
 - Peoples can  commands ,like and share there predictions.
 - Overall view point of stock displayed by software based on there all prediction
 
-My render link - My render link - https://investor-thoughts.onrender.com/ping
+My render link - https://value-investor-thoughts.onrender.com/
